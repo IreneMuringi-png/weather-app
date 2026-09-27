@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="container py-5" style="max-width: 500px;">
+        <h1 class="text-center mb-4">⛅ WEATHER APP</h1>
+   <form id="search-form" class="mb-4">
+    <div class="input-group">
+        <input
+        type="text"
+        id="city-input"
+        class="form-control"
+        placeholder="Enter a city name ..."
+        required>
+        <button type="submit" id="search-btn" class="btn">
+            Search
+        </button>
+    </div>
+   </form>
+   <p id="loading" class="text-center text-muted" style="display: none;">
+    Loading...
+   </p>
+   <div id="error" class="alert alert-danger" style="display: none;">
+   </div>
+   <div id="weather-card" class="weather-card" style="display: none;">
+    <div class="weather-city" id="weather-city"></div>
+   <div class="weather-icon" id="weather-icon">☀️</div>
+<div class="weather-temp" id="weather-temp"></div>
+<div class="weather-desc" id="weather-desc"></div>
+
+<div class="weather-details">
+    <div class="detail">
+    <div class="detail-label">Feels Like</div>
+    <div class="detail-value" id="weather-feels">—</div>
+    </div>
+    <div class="detail">
+        <div class="detail-label">Humidity</div>
+        <div class="detail-value" id="weather-humidity">—</div>
+</div>
+<div class="detail">
+    <div class="detail-label">Wind</div>
+    <div class="detail-value" id="weather-wind">—</div>
+</div>
+</div>
+</div>
+
+</div>
+  
+<script src="main.js"></script>
+</body>
+</html>
