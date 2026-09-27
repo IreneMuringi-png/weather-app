@@ -1,4 +1,4 @@
-const API_KEY = '47065a404d5205fe3f1941963e29dc11';
+
 const form = document.getElementById('search-form');
 const cityInput = document.getElementById('city-input');
 const loading = document.getElementById('loading');
@@ -65,7 +65,7 @@ function showWeather() {
 
 }
 async function getWeather(city) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${CONFIG.API_KEY}&units=metric`;
     const response = await fetch(url);
     if (!response.ok) {
         throw new Error('City not found. Please check the spelling and try again.');
@@ -84,7 +84,7 @@ function renderWeather(data) {
     humidityEl.textContent = `${data.main.humidity}%`;
     windEl.textContent = `${data.wind.speed} m/s`;
     setBackground(data.weather[0].id);
-    
+
     showWeather();
 
 }
