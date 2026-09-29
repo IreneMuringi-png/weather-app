@@ -13,6 +13,7 @@ const humidityEl = document.getElementById('weather-humidity');
 const windEl = document.getElementById('weather-wind');
 const forecastBox = document.getElementById('forecast');
 const forecastList = document.getElementById('forecast-list');
+const locationBtn = document.getElementById('location-btn');
 
 function getWeatherEmoji(code) {
     if (code >= 200 && code < 300) return '⛈️';
@@ -85,6 +86,15 @@ async function getForecast(city) {
   }
   return response.json();
 }
+async function getWeatherByCoords(lat, lon) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${CONFIG.API_KEY}&units=metric`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Could not load weather for your location.');
+
+    }
+    return response.json();
+}
 
 function renderWeather(data) {
 
@@ -150,4 +160,30 @@ form.addEventListener('submit', async e=>{
       catch (err) {
         showError(err.message);
       }
+});
+locationBtn.addEventListener('click', () => {
+  if(!navigator.geolocation) {
+    showError('Geolocation is not supported by your browser.');
+  return;
+  }
+  showLoading();
+navigator.geolocation.getCurrentPosition(
+  async position => {
+    const { latitude, longitude } = position.coords;
+    try {
+      const data = await getWeatherByCoords(latitude, longitude);
+      renderWeather(data);
+      const forecastData = await getForecast(data.name);
+      renderForecast(forecastData);
+
+    } catch (err) {
+      showError(err.message);
+
+    }
+  },
+  error => {
+    showError('Could not get your location. Please allow access and try again.');
+
+  }
+);
 });
