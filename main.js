@@ -11,6 +11,8 @@ const descEl = document.getElementById('weather-desc');
 const feelsEl = document.getElementById('weather-feels');
 const humidityEl = document.getElementById('weather-humidity');
 const windEl = document.getElementById('weather-wind');
+const forecastBox = document.getElementById('forecast');
+const forecastList = document.getElementById('forecast-list');
 
 function getWeatherEmoji(code) {
     if (code >= 200 && code < 300) return '⛈️';
@@ -74,6 +76,16 @@ async function getWeather(city) {
     return response.json();
 
 }
+async function getForecast(city) {
+  const url =  `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${CONFIG.API_KEY}&units=metric`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Could not load forecast.');
+
+  }
+  return response.json();
+}
+
 function renderWeather(data) {
 
     cityEl.textContent = `${data.name}, ${data.sys.country}`;
@@ -88,6 +100,41 @@ function renderWeather(data) {
     showWeather();
 
 }
+function renderForecast(data) {
+  forecastList.innerHTML = '';
+const seenDates = new Set ();
+  const dailyForecasts = [];
+  for(let i = 0; i < data.list.length; i++) {
+    const entry = data.list[i];
+    const date = new Date(entry.dt * 1000);
+    const dateKey = date.toDateString();
+    if(!seenDates.has(dateKey)) {
+      seenDates.add(dateKey);
+      dailyForecasts.push(entry);
+    }
+if (dailyForecasts.length === 5) break;
+
+  }
+  dailyForecasts.forEach(entry => {
+    const date = new Date(entry.dt * 1000);
+    const dayName = date.toLocaleDateString('en-KE', { weekday: 'short' });
+    const icon = getWeatherEmoji(entry.weather[0].id);
+    const high = Math.round(entry.main.temp_max);
+    const low = Math.round(entry.main.temp_min);
+    const div = document.createElement('div');
+    div.className = 'forecast-day';
+    div.innerHTML = `
+    <div class="forecast-day-name">${dayName}</div>
+    <div class="forecast-day-icon">${icon}</div>
+    <div class="forecast-day-temp">${high}°/ <span class="low">${low}° </span></div>
+    `;
+    forecastList.appendChild(div);
+  
+
+  });
+  forecastBox.style.display = 'block';
+
+}
 form.addEventListener('submit', async e=>{
     e.preventDefault();
       const city = cityInput.value.trim();
@@ -96,6 +143,8 @@ form.addEventListener('submit', async e=>{
       try {
         const data = await getWeather(city);
         renderWeather(data);
+        const forecastData = await getForecast(city);
+        renderForecast(forecastData);
         cityInput.value = '';
       }
       catch (err) {
